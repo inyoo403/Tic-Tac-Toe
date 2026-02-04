@@ -1,15 +1,21 @@
-# Tic-Tac-Toe Game
+# Tic-Tac-Toe
 
-A complete implementation of Tic-Tac-Toe game with AI opponent using ImGui.
+ImGui-based Tic-Tac-Toe game with AI opponent.
+
+## How to Play
+
+1. Click an empty square to place X
+2. AI automatically places O
+3. First to complete 3 in a row/column/diagonal wins
 
 ## Features
 
 ### Game Implementation
-  - Board setup with 3x3 grid
-  - Player turn management
-  - Win condition detection (rows, columns, diagonals)
-  - Draw detection
-  - State serialization/deserialization
+- 3x3 grid board setup
+- Player turn management
+- Win detection (rows, columns, diagonals)
+- Draw detection
+- State serialization/deserialization
 
 ### Game Status Window
 - Current player information
@@ -22,10 +28,7 @@ A complete implementation of Tic-Tac-Toe game with AI opponent using ImGui.
 ### Game Log Window
 - Real-time move logging with player and position
 - Win/draw detection logging
-- Color-coded log entries:
-  - Green for wins
-  - Yellow for draws
-  - Blue for player moves
+- Color-coded log entries (Green: wins, Yellow: draws, Blue: moves)
 - Auto-scroll to latest entries
 - Clear log and copy log functionality
 - Maximum 100 log entries
@@ -35,21 +38,30 @@ A complete implementation of Tic-Tac-Toe game with AI opponent using ImGui.
 - Logs include player number, symbol (X/O), and board coordinates
 - Tracks game state changes between turns
 
-### AI Opponent
-- Negamax algorithm with Alpha-Beta Pruning
-- String-based state evaluation for optimal performance
-- Minimizes memory allocation overhead
-- AI player automatically makes moves when it's their turn
+## AI Implementation
 
-## How to Play
+### Algorithm
+Negamax with Alpha-Beta Pruning
 
-1. Click on an empty square to place your piece (X)
-2. AI will automatically place its piece (O) after your move
-3. First player to get three in a row wins
-4. If all squares are filled with no winner, it's a draw
-5. Use "Reset Game" button to start a new game
+### Core Concepts
+- AI = +1, Human = -1 (sign determines maximizing/minimizing)
+- Searches on string copy of board (GUI independent)
+- Reuses `actionForEmptyHolder()` so AI places pieces same way as human
 
-## Technical Details
+### Key Functions
 
-- **AI Algorithm**: Negamax with Alpha-Beta Pruning
-- **State Representation**: String-based (9 characters: '0' for empty, '1' for player 0, '2' for player 1)
+**updateAI()**
+- Tries each empty square virtually, scores with negamax
+- Selects highest scoring move
+
+**negamax(state, depth, alpha, beta, playerColor)**
+- Returns evaluation at terminal state
+- Recursive call: `-negamax(newState, depth+1, -beta, -alpha, -playerColor)`
+- Prunes when `alpha >= beta`
+
+### Evaluation
+- AI wins: +1, Human wins: -1, Draw: 0
+- Multiplied by `(10 - depth)` to prefer faster wins
+
+### Board Representation
+9-char string: `'0'`=empty, `'1'`=X, `'2'`=O
