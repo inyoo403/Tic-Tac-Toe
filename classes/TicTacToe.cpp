@@ -4,9 +4,10 @@
 const int AI_PLAYER = 1;
 const int HUMAN_PLAYER = 0;
 
-TicTacToe::TicTacToe() { _aiMoveMade = false; }
+TicTacToe::TicTacToe() { _aiMoveMade = false; } // Initialize _aiMoveMade to false
 TicTacToe::~TicTacToe() {}
 
+// Create a new bit for the player
 Bit* TicTacToe::PieceForPlayer(const int playerNumber)
 {
     Bit *bit = new Bit();
@@ -15,6 +16,7 @@ Bit* TicTacToe::PieceForPlayer(const int playerNumber)
     return bit;
 }
 
+// Set up the board
 void TicTacToe::setUpBoard()
 {
     setNumberOfPlayers(2);
@@ -36,6 +38,7 @@ void TicTacToe::setUpBoard()
     _aiMoveMade = false;
 }
 
+// Check if the action is valid for the empty holder
 bool TicTacToe::actionForEmptyHolder(BitHolder *holder)
 {
     if (!holder || holder->bit() != nullptr) return false;
@@ -50,6 +53,7 @@ bool TicTacToe::actionForEmptyHolder(BitHolder *holder)
     return true;
 }
 
+// Place a piece for the current player if the holder is empty
 bool TicTacToe::canBitMoveFrom(Bit *bit, BitHolder *src) { return false; }
 bool TicTacToe::canBitMoveFromTo(Bit* bit, BitHolder*src, BitHolder*dst) { return false; }
 
@@ -63,12 +67,14 @@ void TicTacToe::stopGame()
     _aiMoveMade = false;
 }
 
+// Get the owner of the bit at the given index
 Player* TicTacToe::ownerAt(int index ) const
 {
     Bit* bit = _grid[index / 3][index % 3].bit();
     return bit ? bit->getOwner() : nullptr;
 }
 
+// Check for a winner
 Player* TicTacToe::checkForWinner()
 {
     int wins[8][3] = {{0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6}};
@@ -81,6 +87,7 @@ Player* TicTacToe::checkForWinner()
     return nullptr;
 }
 
+// Check for a draw
 bool TicTacToe::checkForDraw()
 {
     for (int y = 0; y < 3; y++) {
@@ -91,8 +98,10 @@ bool TicTacToe::checkForDraw()
     return true;
 }
 
+// Get the initial state string
 std::string TicTacToe::initialStateString() { return "000000000"; }
 
+// Get the current state string
 std::string TicTacToe::stateString() const
 {
     std::string state = "";
@@ -106,6 +115,7 @@ std::string TicTacToe::stateString() const
     return state;
 }
 
+// Set the state string
 void TicTacToe::setStateString(const std::string &s)
 {
     for (int i = 0; i < 9; i++) {
@@ -119,6 +129,7 @@ void TicTacToe::setStateString(const std::string &s)
     }
 }
 
+// Check if the state is a terminal state
 bool TicTacToe::aiTestForTerminalState(const std::string& state)
 {
     int wins[8][3] = {{0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6}};
@@ -132,6 +143,7 @@ bool TicTacToe::aiTestForTerminalState(const std::string& state)
     return true;
 }
 
+// Evaluate the board for the AI
 int TicTacToe::aiBoardEval(const std::string& state)
 {
     int wins[8][3] = {{0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6}};
@@ -144,6 +156,7 @@ int TicTacToe::aiBoardEval(const std::string& state)
     return 0;
 }
 
+// Negamax with Alpha-Beta pruning
 int TicTacToe::negamax(const std::string& state, int depth, int alpha, int beta, int playerColor)
 {
     if (aiTestForTerminalState(state)) {
@@ -167,6 +180,7 @@ int TicTacToe::negamax(const std::string& state, int depth, int alpha, int beta,
     return bestValue;
 }
 
+// Update the AI
 void TicTacToe::updateAI()
 {
     if (_aiMoveMade) return;
